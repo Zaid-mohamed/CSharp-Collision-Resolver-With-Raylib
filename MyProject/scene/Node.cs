@@ -19,7 +19,7 @@ class Node {
 
 
 class Node2D : Node {
-    protected Vector2 position = new(0f, 0f);
+    public Vector2 position = new(0f, 0f);
 
     RectangleShape RectShape;
     CircleShape CirShape;
@@ -91,9 +91,6 @@ class Node2D : Node {
     }
 
 }
-
-
-
 
 
 

@@ -2,11 +2,12 @@
 
 using System.Linq.Expressions;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using Raylib_cs;
 using Key = Raylib_cs.KeyboardKey;
 
 
-partial class Player : Node2D
+partial class Player : KinematicObject
 {
     public Player(float PosX, float PosY, Shape p_shape, Node p_parent) : base(PosX, PosY, p_shape, p_parent)
     {
@@ -20,19 +21,20 @@ partial class Player : Node2D
     private Key LKey = Key.A;
     private Key RKey = Key.D;
 
-    private CircleCollisionShape collision = new(new Vector2(0f, 0f), 60f);
 
 
     private void HandleMovement() {
         float InputDir = PlayerInputUtil.GetAxis(LKey, RKey);
+        float InputDirHor = PlayerInputUtil.GetAxis(Key.W, Key.S);
         Velocity.X = Speed * InputDir;
+        Velocity.Y = Speed * InputDirHor;
         ApplyVelocity();
 
     }
 
     private void ApplyVelocity() {
         position += Velocity;
-        collision.Position = position;
+        CollShape.Position = position;
         ApplyGravity();
     }
     private void ApplyGravity() { Velocity.Y += Gravity; }
@@ -41,9 +43,11 @@ partial class Player : Node2D
     public void _Process() {
         HandleMovement();
         Draw();
-        // collision.DebugDraw();
+        // CollShape.DebugDraw();
 
     }
+
+
 
 }
 
