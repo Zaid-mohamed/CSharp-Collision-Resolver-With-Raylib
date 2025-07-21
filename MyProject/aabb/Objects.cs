@@ -2,6 +2,7 @@
 
 using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ObjectiveC;
 
 
@@ -57,6 +58,30 @@ class KinematicObject : CollisionObject {
 
         switch (Obj.CollShape)
         {
+            
+            case CircleCollisionShape:
+                position -= CollShape.GetIntersectionDisplacement(Obj.CollShape);
+                Velocity = new Vector2(0f);
+                break;
+            case RectangleCollisionShape:
+                // rad - dis_to_neearest
+                Vector2 Dis = CollShape.GetIntersectionDisplacement(Obj.CollShape);
+                position -= Dis;
+                Velocity = new Vector2(0f);
+                break;
+
+        }
+    }
+
+    private void ResolveKinematicObject(KinematicObject Obj) {
+        if (!CollShape.IntersectsWith(Obj.CollShape)) return;
+
+        
+        if (Obj.CollShape == this.CollShape) return;
+
+
+        switch (Obj.CollShape)
+        {
             case CircleCollisionShape:
                 position -= CollShape.GetIntersectionDisplacement(Obj.CollShape);
                 Velocity = new Vector2(0f);
@@ -68,13 +93,6 @@ class KinematicObject : CollisionObject {
                 break;
 
         }
-    }
-
-    private void ResolveKinematicObject(KinematicObject Obj) {
-        if (!CollShape.IntersectsWith(Obj.CollShape)) return;
-        if (Obj.CollShape == this.CollShape) return;
-
-        position -= CollShape.GetIntersectionDisplacement(Obj.CollShape);
     }
 
 }

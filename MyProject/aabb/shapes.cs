@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using Raylib_cs;
 
 abstract class CollisionShape {
@@ -98,31 +99,27 @@ class CircleCollisionShape : CollisionShape {
 }
 
 
-class RectangleCollisionShape : CollisionShape {
-    public RectangleCollisionShape(Vector2 p_position, Vector2 p_size) : base(p_position) {
-        Size = p_size;
-    }
-
-    public Vector2 Size;
+class RectangleCollisionShape(Vector2 p_position, Vector2 p_size) : CollisionShape(p_position) {
+    public Vector2 Size = p_size;
 
 
 
 
-public override bool IntersectsWith(CollisionShape another)
-    {
-        if (another is CircleCollisionShape) {
-            return another.IntersectsWith(this);
+    public override bool IntersectsWith(CollisionShape another)
+        {
+         if (another is CircleCollisionShape) {
+             return another.IntersectsWith(this);
+         }
+         else if (another is RectangleCollisionShape RectShape) {
+             return Position.X < another.Position.X + RectShape.Size.X
+             &&      Position.X + Size.X > another.Position.X
+             &&      Position.Y < another.Position.Y + RectShape.Size.Y
+             &&      Position.Y + Size.Y > another.Position.Y;
+         }
+         else {
+             return false;
+         }
         }
-        else if (another is RectangleCollisionShape) {
-            return (Position.X > another.Position.X + ((RectangleCollisionShape)another).Size.X
-            &&      Position.X + Size.X < another.Position.X
-            &&      Position.Y > another.Position.Y + ((RectangleCollisionShape)another).Size.Y
-            &&      Position.Y + Size.Y < another.Position.Y);
-        }
-        else {
-            return false;
-        }
-    }
 
 
     public override void DebugDraw()
@@ -134,6 +131,18 @@ public override bool IntersectsWith(CollisionShape another)
 
     public override Vector2 GetIntersectionDisplacement(CollisionShape Another)
     {
+        if (!this.IntersectsWith(Another)) return new Vector2(-1f, -1f);
+
+        switch (Another) {
+            case CircleCollisionShape Shape:
+                return -Shape.GetIntersectionDisplacement(this);
+            case RectangleCollisionShape Shape:
+                // Vector2 DirToShape = Util.GetDirectionBetween(this.Position, Shape.Position);
+                float XDiff = MathF.Max(0f, MathF.Min(Position.X + Size.X, Shape.Position.X + Shape.Size.X) - MathF.Max(Position.X, Shape.Position.X));
+                float YDiff = MathF.Max(0f, MathF.Min(Position.Y + Size.Y, Shape.Position.Y + Shape.Size.Y) - MathF.Max(Position.Y, Shape.Position.Y));
+                 return new Vector2(XDiff < YDiff ? XDiff : 0f, YDiff < XDiff ? YDiff : 0f);
+        }
+
         return new Vector2(-1f, -1f);
     }
 }
