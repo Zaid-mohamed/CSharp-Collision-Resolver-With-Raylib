@@ -9,9 +9,7 @@ using System.Runtime.InteropServices.ObjectiveC;
 class CollisionObject(float PosX, float PosY, Node2D.Shape p_shape, Node? p_parent) : Node2D(PosX, PosY, p_shape, p_parent) {
     public CollisionShape CollShape = new CircleCollisionShape(new Vector2(0f), 0.0f);
 
-    public void AddShapeNoDel(CollisionShape PShape) {
-        if (CollShape != null) return;
-
+    public void AddShape(CollisionShape PShape) {
         CollShape = PShape;
     }
 
@@ -21,9 +19,7 @@ class CollisionObject(float PosX, float PosY, Node2D.Shape p_shape, Node? p_pare
 
 
 
-class StaticObject : CollisionObject {
-    public StaticObject(float PosX, float PosY, Shape p_shape, Node? p_parent) : base(PosX, PosY, p_shape, p_parent){}
-
+class StaticObject(float PosX, float PosY, Node2D.Shape p_shape, Node? p_parent) : CollisionObject(PosX, PosY, p_shape, p_parent) {
     public override void ResolveCollision(CollisionObject Another)
     {
         

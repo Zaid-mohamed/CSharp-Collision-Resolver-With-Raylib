@@ -29,9 +29,9 @@ namespace MyProject
             // Dummy.GiveCircleShape(new(30f, Color.Black));
             Dummy2.GiveRectShape(new(new Vector2(640f, 60f), Color.Red));
 
-            // Dummy.AddShapeNoDel(new CircleCollisionShape(Dummy.position, 30f));
-            Dummy2.AddShapeNoDel(new RectangleCollisionShape(Dummy2.position, new Vector2(640f, 60f)));
-            player.AddShapeNoDel(new CircleCollisionShape(player.position, 60f));
+            // Dummy.AddShape(new CircleCollisionShape(Dummy.position, 30f));
+            player.AddShape(new CircleCollisionShape(player.position, 60f));
+            Dummy2.AddShape(new RectangleCollisionShape(Dummy2.position, new Vector2(640f, 60f)));
 
 
             Raylib.InitWindow(640, 360, "MyGame");
@@ -40,11 +40,7 @@ namespace MyProject
                 Raylib.BeginDrawing();
                 Raylib.ClearBackground(Color.White);
                 player._Process();
-                // Dummy.Draw();
-                // Dummy.CollShape.DebugDraw();
                 Dummy2.Draw();
-                Dummy2.CollShape.DebugDraw();
-                // Console.WriteLine(player.CollShape.IntersectsWith(Dummy2.CollShape));
                 ps.ResolveCollision();
                 Raylib.EndDrawing();
             }
