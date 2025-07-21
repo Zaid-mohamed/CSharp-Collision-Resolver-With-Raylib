@@ -33,17 +33,17 @@ class CircleCollisionShape : CollisionShape {
             float Distance = Util.DistanceBetween(shape.Position, this.Position);
             return Distance < this.radius + shape.radius;
         }
-        else if (another is RectangleCollisionShape) {
+        else if (another is RectangleCollisionShape Shape) {
             Vector2 NearestPoint = new(
                 Util.Clamp(
-                    (((RectangleCollisionShape)another)).Position.X,
-                    another.Position.X,
-                    another.Position.X + ((RectangleCollisionShape)another).Size.X
+                    Position.X,
+                    Shape.Position.X,
+                    Shape.Position.X + Shape.Size.X
                     ),
                 Util.Clamp(
-                    ((RectangleCollisionShape)another).Position.Y,
-                    another.Position.Y,
-                    another.Position.Y + ((RectangleCollisionShape)another).Size.Y
+                    Position.Y,
+                    Shape.Position.Y,
+                    Shape.Position.Y + Shape.Size.Y
                     )
 
                 
@@ -61,13 +61,31 @@ class CircleCollisionShape : CollisionShape {
     {
         if (!this.IntersectsWith(Another)) return new Vector2(-1f, -1f);
 
-        if (Another is CircleCollisionShape shape) {
-            // radii - distance
-            float RadiiSum = this.radius + shape.radius;
-            float Distance = Util.DistanceBetween(this.Position, shape.Position);
-            return Util.GetDirectionBetween(this.Position, shape.Position) * (RadiiSum - Distance);
+        switch (Another) {
+            case CircleCollisionShape Shape:
+                float RadiiSum = this.radius + Shape.radius;
+                float Distance = Util.DistanceBetween(this.Position, Shape.Position);
+                return Util.GetDirectionBetween(this.Position, Shape.Position) * (RadiiSum - Distance);
+            case RectangleCollisionShape Shape:
+                Vector2 NearestPoint = new(
+                Util.Clamp(
+                    Position.X,
+                    Shape.Position.X,
+                    Shape.Position.X + Shape.Size.X
+                    ),
+                Util.Clamp(
+                    Position.Y,
+                    Shape.Position.Y,
+                    Shape.Position.Y + Shape.Size.Y
+                    )
+
+                
+                );
+
+                float DistanceToNearest = Util.DistanceBetween(this.Position, NearestPoint);
+                return Util.GetDirectionBetween(this.Position, NearestPoint) * (radius - DistanceToNearest);
         }
-        //TODO: add handling for remaining shapes, aka RectangleCollisionShape;
+
         return new Vector2(-1f, -1f);
     }
 

@@ -1,6 +1,7 @@
 
 
 using System.Numerics;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices.ObjectiveC;
 
 
@@ -10,7 +11,7 @@ class CollisionObject : Node2D {
 
     }
 
-    public CollisionShape CollShape;
+    public CollisionShape CollShape = null;
 
     public void AddShapeNoDel(CollisionShape PShape) {
         if (CollShape != null) return;
@@ -26,30 +27,62 @@ class CollisionObject : Node2D {
 
 class StaticObject : CollisionObject {
     public StaticObject(float PosX, float PosY, Shape p_shape, Node p_parent) : base(PosX, PosY, p_shape, p_parent){}
+
+    public override void ResolveCollision(CollisionObject Another)
+    {
+        
+    }
+
+
 }
 
 class KinematicObject : CollisionObject {
     public KinematicObject(float PosX, float PosY, Shape p_shape, Node p_parent) : base(PosX, PosY, p_shape, p_parent){}
 
 
-    Vector2 Velocity;
+    public Vector2 Velocity;
 
     public override void ResolveCollision(CollisionObject Another)
     {
-        if (Another is StaticObject obj) {
-            ResolveStaticObject(obj);
+        if (Another is StaticObject stat) {
+            ResolveStaticObject(stat);
         }
-        else {
+        else if (Another is KinematicObject kine){
+            ResolveKinematicObject(kine);
         }
     }
 
+
+    public void MoveAndCollide() {
+        position += Velocity;
+        CollShape.Position = position;
+    }
 
     private void ResolveStaticObject(StaticObject Obj) {
         if (!CollShape.IntersectsWith(Obj.CollShape)) return;
         if (Obj.CollShape == this.CollShape) return;
 
-        position -= CollShape.GetIntersectionDisplacement(Obj.CollShape);
+
+        switch (Obj.CollShape)
+        {
+            case CircleCollisionShape:
+                position -= CollShape.GetIntersectionDisplacement(Obj.CollShape);
+                Velocity = new Vector2(0f);
+                break;
+            case RectangleCollisionShape:
+                // rad - dis_to_neearest
+                position -= CollShape.GetIntersectionDisplacement(Obj.CollShape);
+                Velocity = new Vector2(0f);
+                break;
+
+        }
     }
 
+    private void ResolveKinematicObject(KinematicObject Obj) {
+        if (!CollShape.IntersectsWith(Obj.CollShape)) return;
+        if (Obj.CollShape == this.CollShape) return;
+
+        position -= CollShape.GetIntersectionDisplacement(Obj.CollShape);
+    }
 
 }
