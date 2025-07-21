@@ -1,27 +1,18 @@
 
-
-using System.Linq.Expressions;
-using System.Numerics;
-using System.Reflection.Metadata;
-using System.Runtime.CompilerServices;
 using Raylib_cs;
 using Key = Raylib_cs.KeyboardKey;
 
 
-partial class Player : KinematicObject
+partial class Player(float PosX, float PosY, Node2D.Shape p_shape, Node? p_parent) : KinematicObject(PosX, PosY, p_shape, p_parent)
 {
-    public Player(float PosX, float PosY, Shape p_shape, Node p_parent) : base(PosX, PosY, p_shape, p_parent)
-    {
-    }
-
     public float Speed = 1f;
     public float JumpForce = 2f;
 
     public float Gravity = 0.01f;
 
-    private Key LKey = Key.A;
-    private Key RKey = Key.D;
-    private Key JumpKey = Key.Space;
+    private readonly Key LKey = Key.A;
+    private readonly Key RKey = Key.D;
+    private readonly Key JumpKey = Key.Space;
 
 
 
@@ -44,8 +35,6 @@ partial class Player : KinematicObject
     public void _Process() {
         HandleMovement();
         Draw();
-        // Console.WriteLine(Velocity);
-        // CollShape.DebugDraw();
 
     }
 
@@ -58,9 +47,6 @@ partial class Player : KinematicObject
 
 class PlayerInputUtil
 {
-
-
-
 
     public static float GetKeyStrength(Key Key) => Raylib.IsKeyDown(Key) ? 1f : 0f;
     

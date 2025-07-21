@@ -7,12 +7,13 @@ class Node {
     public string Name = "";
     public List<Node> Children = [];
     
-    protected Node parent;
+    protected Node? parent;
 
-    
-    public Node GetParent() => parent;
+
+    public Node? GetParent() => parent;
+
     public void AddChild(Node p_node) {
-        Children.Append(p_node);
+        Children.Add(p_node);
     }
 }
 
@@ -25,14 +26,12 @@ class Node2D : Node {
     CircleShape CirShape;
 
 
-    public Node2D(float PosX, float PosY, Shape p_shape, Node p_parent) {
+    public Node2D(float PosX, float PosY, Shape p_shape, Node? p_parent) {
         position.X = PosX;
         position.Y = PosY;
         shape = p_shape;
         parent = p_parent;
-        if (parent != null) {
-            parent.AddChild(this);
-        }
+        parent?.AddChild(this);
 
     }
 
@@ -82,11 +81,11 @@ class Node2D : Node {
 
 
     private Vector2 GetRealPosition() {
-        if (parent == null || !(parent is Node2D)) {
+        if ((parent is null) || (parent is not Node2D parent2D)) {
             return position;
         }
         else {
-            return (parent as Node2D).position + position;
+            return parent2D.position + position;
         }
     }
 

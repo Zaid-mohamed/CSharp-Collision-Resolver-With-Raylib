@@ -6,12 +6,8 @@ using System.Runtime.InteropServices.ObjectiveC;
 
 
 
-class CollisionObject : Node2D {
-     public CollisionObject(float PosX, float PosY, Shape p_shape, Node p_parent) : base(PosX, PosY, p_shape, p_parent){
-
-    }
-
-    public CollisionShape CollShape = null;
+class CollisionObject(float PosX, float PosY, Node2D.Shape p_shape, Node? p_parent) : Node2D(PosX, PosY, p_shape, p_parent) {
+    public CollisionShape CollShape = new CircleCollisionShape(new Vector2(0f), 0.0f);
 
     public void AddShapeNoDel(CollisionShape PShape) {
         if (CollShape != null) return;
@@ -26,7 +22,7 @@ class CollisionObject : Node2D {
 
 
 class StaticObject : CollisionObject {
-    public StaticObject(float PosX, float PosY, Shape p_shape, Node p_parent) : base(PosX, PosY, p_shape, p_parent){}
+    public StaticObject(float PosX, float PosY, Shape p_shape, Node? p_parent) : base(PosX, PosY, p_shape, p_parent){}
 
     public override void ResolveCollision(CollisionObject Another)
     {
@@ -37,7 +33,7 @@ class StaticObject : CollisionObject {
 }
 
 class KinematicObject : CollisionObject {
-    public KinematicObject(float PosX, float PosY, Shape p_shape, Node p_parent) : base(PosX, PosY, p_shape, p_parent){}
+    public KinematicObject(float PosX, float PosY, Shape p_shape, Node? p_parent) : base(PosX, PosY, p_shape, p_parent){}
 
 
     public Vector2 Velocity;
