@@ -65,6 +65,9 @@ class KinematicObject(float PosX, float PosY, Node2D.DrawShape PShape, Node? PPa
     /// <param name="Another"></param>
     public override void ResolveCollision(CollisionObject Another)
     {
+        if (Another.CollShape == CollShape) return;
+        if (!CollShape.IntersectsWith(Another.CollShape)) return;
+
         switch (Another.CollShape)
         {
             case CircleCollisionShape CircShape:
