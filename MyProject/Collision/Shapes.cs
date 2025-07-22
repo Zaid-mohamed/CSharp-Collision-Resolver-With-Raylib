@@ -2,22 +2,59 @@ using System.Numerics;
 using Raylib_cs;
 
 
-abstract class CollisionShape(Vector2 p_position)
+/// <summary>
+/// Base class for all Collision Shapes
+/// </summary>
+/// <param name="PPosition"></param>
+abstract class CollisionShape(Vector2 PPosition)
 {
-    public Vector2 Position = p_position;
+    /// <summary>
+    /// Position of the Collision Shape
+    /// In case of CircleCollisioShape it will be in the center of the circle
+    /// But in the RectangleCollisionShape it will be in the top-left corner
+    /// </summary>
+    public Vector2 Position = PPosition;
 
+    /// <summary>
+    /// The Fill Color of the shape when debugging
+    /// </summary>
     protected Color DebugColor = new(0, 50, 255, 155);
+    /// <summary>
+    /// the Outline Color of the shape while debugging
+    /// </summary>
     protected Color DebugColorOutline = new(0, 50, 255, 200);
 
+    /// <summary>
+    /// returns true if this shape intersects with the given Another shape, otherwise returns false
+    /// </summary>
+    /// <param name="Another"></param>
+    /// <returns>bool</returns>
     public abstract bool IntersectsWith(CollisionShape Another);
+
+    /// <summary>
+    /// Returns the Displacement needed to be reversed to resolve the collision between this CollisionShape and the
+    /// given Another shape.
+    /// </summary>
+    /// <param name="Another"></param>
+    /// <returns></returns>
     public abstract Vector2 GetIntersectionDisplacement(CollisionShape Another);
+    /// <summary>
+    /// Draws the shape for debugging.
+    /// </summary>
     public abstract void DebugDraw();
 
 }
 
 
-
+/// <summary>
+/// The Circle Collision Shape
+/// </summary>
+/// <param name="PPosition"></param>
+/// <param name="PRadius"></param>
 class CircleCollisionShape(Vector2 PPosition, float PRadius) : CollisionShape(PPosition) {
+    /// <summary>
+    /// Radius of the circle
+    /// </summary>
     public float radius = PRadius;
 
 
@@ -93,7 +130,18 @@ class CircleCollisionShape(Vector2 PPosition, float PRadius) : CollisionShape(PP
 }
 
 
+
+/// <summary>
+/// Rectangle Collision Shape
+/// </summary>
+/// <param name="PPosition"></param>
+/// <param name="PSize"></param>
 class RectangleCollisionShape(Vector2 PPosition, Vector2 PSize) : CollisionShape(PPosition) {
+    /// <summary>
+    /// Size of the Rectangle Shape,
+    /// X: Width
+    /// Y: Height
+    /// </summary>
     public Vector2 Size = PSize;
 
 
@@ -140,41 +188,6 @@ class RectangleCollisionShape(Vector2 PPosition, Vector2 PSize) : CollisionShape
                 return new Vector2(-1f);
         }
 
-    }
-}
-
-
-
-class Util
-{
-    public static float DistanceBetween(Vector2 A, Vector2 B)
-    {
-        return MathF.Sqrt(MathF.Pow(B.X - A.X, 2f) + MathF.Pow(B.Y - A.Y, 2f));
-    }
-    
-    public static float Clamp(float Value, float Min, float Max)
-    {
-        if (Min > Max) Min = Max;
-        if (Max < Min) Max = Min;
-
-        if (Value < Min) return Min;
-        if (Value > Max) return Max;
-
-        return Value;
-    }
-
-    public static Vector2 GetDirectionBetween(Vector2 A, Vector2 B)
-    {
-        return Util.Normalized(B - A);
-    }
-
-    public static float GetLength(Vector2 A)
-    {
-        return Util.DistanceBetween(Vector2.Zero, A);
-    }
-    public static Vector2 Normalized(Vector2 A)
-    {
-        return new Vector2(A.X / Util.GetLength(A), A.Y / Util.GetLength(A));
     }
 }
 
