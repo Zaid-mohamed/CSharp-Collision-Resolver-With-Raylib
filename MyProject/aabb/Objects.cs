@@ -10,7 +10,7 @@ using System.Runtime.InteropServices.ObjectiveC;
 class CollisionObject(float PosX, float PosY, Node2D.Shape p_shape, Node? p_parent) : Node2D(PosX, PosY, p_shape, p_parent) {
     public CollisionShape CollShape = new CircleCollisionShape(new Vector2(0f), 0.0f);
 
-    public void AddShape(CollisionShape PShape) {
+    public void AddCollisionShape(CollisionShape PShape) {
         CollShape = PShape;
     }
 
@@ -66,7 +66,7 @@ class KinematicObject : CollisionObject {
             case RectangleCollisionShape:
                 // rad - dis_to_neearest
                 Vector2 Dis = CollShape.GetIntersectionDisplacement(Obj.CollShape);
-                position -= Dis;
+                position += Dis;
                 Velocity = new Vector2(0f);
                 break;
 
@@ -88,7 +88,8 @@ class KinematicObject : CollisionObject {
                 break;
             case RectangleCollisionShape:
                 // rad - dis_to_neearest
-                position -= CollShape.GetIntersectionDisplacement(Obj.CollShape);
+                Vector2 Dis = CollShape.GetIntersectionDisplacement(Obj.CollShape);
+                position += Dis;
                 Velocity = new Vector2(0f);
                 break;
 

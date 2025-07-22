@@ -3,6 +3,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using Raylib_cs;
 
+
 abstract class CollisionShape {
     public Vector2 Position;
 
@@ -15,7 +16,6 @@ abstract class CollisionShape {
     public abstract void DebugDraw();
 
 }
-
 
 
 
@@ -140,7 +140,9 @@ class RectangleCollisionShape(Vector2 p_position, Vector2 p_size) : CollisionSha
                 // Vector2 DirToShape = Util.GetDirectionBetween(this.Position, Shape.Position);
                 float XDiff = MathF.Max(0f, MathF.Min(Position.X + Size.X, Shape.Position.X + Shape.Size.X) - MathF.Max(Position.X, Shape.Position.X));
                 float YDiff = MathF.Max(0f, MathF.Min(Position.Y + Size.Y, Shape.Position.Y + Shape.Size.Y) - MathF.Max(Position.Y, Shape.Position.Y));
-                 return new Vector2(XDiff < YDiff ? XDiff : 0f, YDiff < XDiff ? YDiff : 0f);
+                
+                return new Vector2(XDiff < YDiff ? (Position.X > Shape.Position.X ? XDiff : -XDiff) : 0f,
+                YDiff < XDiff ? (Position.Y > Shape.Position.Y ? YDiff : -YDiff ) : 0f);
         }
 
         return new Vector2(-1f, -1f);

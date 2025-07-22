@@ -29,9 +29,9 @@ namespace MyProject
             Dummy.GiveRectShape(new(new Vector2(80f, 80f), Color.Black));
             Dummy2.GiveRectShape(new(new Vector2(640f, 60f), Color.Red));
 
-            Dummy.AddShape(new RectangleCollisionShape(Dummy.position, new Vector2(80f, 80f)));
-            player.AddShape(new RectangleCollisionShape(player.position, new Vector2(60f)));
-            Dummy2.AddShape(new RectangleCollisionShape(Dummy2.position, new Vector2(640f, 60f)));
+            Dummy.AddCollisionShape(new RectangleCollisionShape(Dummy.position, new Vector2(80f, 80f)));
+            player.AddCollisionShape(new RectangleCollisionShape(player.position, new Vector2(60f)));
+            Dummy2.AddCollisionShape(new RectangleCollisionShape(Dummy2.position, new Vector2(640f, 60f)));
 
 
             Raylib.InitWindow(640, 360, "MyGame");
