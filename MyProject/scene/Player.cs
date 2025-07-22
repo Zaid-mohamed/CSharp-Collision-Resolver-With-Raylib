@@ -73,13 +73,26 @@ partial class Player(float PosX, float PosY, Node2D.DrawShape PShape, Node? p_pa
     }
 
 
-
-
+    /// <summary>
+    /// Utiliy Class for the Player containing some usful methods for input.
+    /// </summary>
     class PlayerInputUtil
     {
 
-        public static float GetKeyStrength(Key Key) => Raylib.IsKeyDown(Key) ? 1f : 0f;
+        /// <summary>
+        /// Returns 1f if the given Key is pressed
+        /// </summary>
+        /// <param name="PKey"></param>
+        /// <returns></returns>
+        public static float GetKeyStrength(Key PKey) => Raylib.IsKeyDown(PKey) ? 1f : 0f;
 
+        /// <summary>
+        /// Returns 1f if the Rkey is being pressed and the Lkey is not, and -1f for the opposite
+        /// Also returns 0f if both of them are pressed or released.
+        /// </summary>
+        /// <param name="LKey"></param>
+        /// <param name="RKey"></param>
+        /// <returns></returns>
         public static float GetAxis(Key LKey, Key RKey) => GetKeyStrength(RKey) - GetKeyStrength(LKey);
 
     }

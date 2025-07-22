@@ -12,7 +12,7 @@ namespace MyProject
 
         static void Main(string[] Args)
         {
-            Player player = new(340f, 0f, Node2D.DrawShape.RECTANGLE, null);
+            Player player = new(340f, 60f, Node2D.DrawShape.RECTANGLE, null);
             StaticObject Dummy = new(320f, 0f, Node2D.DrawShape.RECTANGLE, null);
             StaticObject Dummy2 = new(0f, 200f, Node2D.DrawShape.RECTANGLE, null);
             PhysicsResolver ps = new();
@@ -41,6 +41,8 @@ namespace MyProject
                 player._Process();
                 Dummy.Draw();
                 Dummy2.Draw();
+                player.CollShape.DebugDraw();
+                Dummy2.CollShape.DebugDraw();
                 ps.ResolveCollision();
                 Raylib.EndDrawing();
             }
