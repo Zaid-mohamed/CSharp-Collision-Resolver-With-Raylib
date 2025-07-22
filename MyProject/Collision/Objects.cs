@@ -78,7 +78,7 @@ class KinematicObject(float PosX, float PosY, Node2D.DrawShape PShape, Node? PPa
             case RectangleCollisionShape RectShape:
                 Vector2 Dis2 = CollShape.GetIntersectionDisplacement(RectShape);
                 Position += Dis2;
-                Velocity = new Vector2(0f);
+                Velocity = new Vector2(Dis2.X != 0f ? 0f : Velocity.X, Dis2.Y != 0f ? 0f : Velocity.Y);
                 break;
 
         }
