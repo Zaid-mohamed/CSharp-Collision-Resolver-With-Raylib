@@ -4,7 +4,6 @@ using System.Numerics;
 using Raylib_cs;
 
 
-
 namespace MyProject
 {
     class Program
@@ -13,9 +12,9 @@ namespace MyProject
 
         static void Main(string[] Args)
         {
-            Player player = new(340f, 0f, Node2D.Shape.RECTANGLE, null);
-            StaticObject Dummy = new(320f, 0f, Node2D.Shape.RECTANGLE, null);
-            StaticObject Dummy2 = new(0f, 200f, Node2D.Shape.RECTANGLE, null);
+            Player player = new(340f, 0f, Node2D.DrawShape.RECTANGLE, null);
+            StaticObject Dummy = new(320f, 0f, Node2D.DrawShape.RECTANGLE, null);
+            StaticObject Dummy2 = new(0f, 200f, Node2D.DrawShape.RECTANGLE, null);
             PhysicsResolver ps = new();
 
 
@@ -29,9 +28,9 @@ namespace MyProject
             Dummy.GiveRectShape(new(new Vector2(80f, 80f), Color.Black));
             Dummy2.GiveRectShape(new(new Vector2(640f, 60f), Color.Red));
 
-            Dummy.AddCollisionShape(new RectangleCollisionShape(Dummy.position, new Vector2(80f, 80f)));
-            player.AddCollisionShape(new RectangleCollisionShape(player.position, new Vector2(60f)));
-            Dummy2.AddCollisionShape(new RectangleCollisionShape(Dummy2.position, new Vector2(640f, 60f)));
+            Dummy.AddCollisionShape(new RectangleCollisionShape(Dummy.Position, new Vector2(80f, 80f)));
+            player.AddCollisionShape(new RectangleCollisionShape(player.Position, new Vector2(60f)));
+            Dummy2.AddCollisionShape(new RectangleCollisionShape(Dummy2.Position, new Vector2(640f, 60f)));
 
 
             Raylib.InitWindow(640, 360, "MyGame");
@@ -43,7 +42,6 @@ namespace MyProject
                 Dummy.Draw();
                 Dummy2.Draw();
                 ps.ResolveCollision();
-                // Console.WriteLine(player.CollShape.GetIntersectionDisplacement(Dummy2.CollShape));
                 Raylib.EndDrawing();
             }
 

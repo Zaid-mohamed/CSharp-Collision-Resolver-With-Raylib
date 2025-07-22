@@ -6,9 +6,9 @@ class PhysicsResolver {
 
 
     public void ResolveCollision() {
-        foreach (CollisionObject i in Objs) {
-            foreach (CollisionObject j in Objs) {
-                i.ResolveCollision(j);
+        foreach (CollisionObject I in Objs) {
+            foreach (CollisionObject J in Objs) {
+                I.ResolveCollision(J);
             }
         }
     }

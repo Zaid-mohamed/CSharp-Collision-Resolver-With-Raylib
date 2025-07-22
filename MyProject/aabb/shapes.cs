@@ -1,15 +1,13 @@
-using System.Collections.ObjectModel;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 using Raylib_cs;
 
 
-abstract class CollisionShape {
-    public Vector2 Position;
+abstract class CollisionShape(Vector2 p_position)
+{
+    public Vector2 Position = p_position;
 
-    public CollisionShape(Vector2 p_position) {
-        Position = p_position;
-    }
+    protected Color DebugColor = new(0, 50, 255, 155);
+    protected Color DebugColorOutline = new(0, 50, 255, 200);
 
     public abstract bool IntersectsWith(CollisionShape Another);
     public abstract Vector2 GetIntersectionDisplacement(CollisionShape Another);
@@ -19,42 +17,38 @@ abstract class CollisionShape {
 
 
 
-class CircleCollisionShape : CollisionShape {
-
-    public CircleCollisionShape(Vector2 p_position, float p_radius) : base(p_position){
-        radius = p_radius;
-    }
-
-    public float radius;
+class CircleCollisionShape(Vector2 PPosition, float PRadius) : CollisionShape(PPosition) {
+    public float radius = PRadius;
 
 
-    public override bool IntersectsWith(CollisionShape another)
+    public override bool IntersectsWith(CollisionShape Another)
     {
-        if (another is CircleCollisionShape shape) {
-            float Distance = Util.DistanceBetween(shape.Position, this.Position);
-            return Distance < this.radius + shape.radius;
-        }
-        else if (another is RectangleCollisionShape Shape) {
-            Vector2 NearestPoint = new(
+
+        switch (Another) {
+            case CircleCollisionShape Circle:
+                float Distance = Util.DistanceBetween(Circle.Position, this.Position);
+                return Distance < this.radius + Circle.radius;
+            case RectangleCollisionShape Rect:
+                Vector2 NearestPoint = new(
                 Util.Clamp(
                     Position.X,
-                    Shape.Position.X,
-                    Shape.Position.X + Shape.Size.X
+                    Rect.Position.X,
+                    Rect.Position.X + Rect.Size.X
                     ),
                 Util.Clamp(
                     Position.Y,
-                    Shape.Position.Y,
-                    Shape.Position.Y + Shape.Size.Y
+                    Rect.Position.Y,
+                    Rect.Position.Y + Rect.Size.Y
                     )
 
                 
                 );
 
-            float Distance = Util.DistanceBetween(this.Position, NearestPoint);
-            return this.radius > Distance;
-        }
-        else {
-            return false;
+                // because case 1 has a variable of name Distance.
+                float Distance2 = Util.DistanceBetween(this.Position, NearestPoint);
+                return this.radius > Distance2;
+            default:
+                return false;
         }
     }
 
@@ -85,47 +79,47 @@ class CircleCollisionShape : CollisionShape {
 
                 float DistanceToNearest = Util.DistanceBetween(this.Position, NearestPoint);
                 return Util.GetDirectionBetween(this.Position, NearestPoint) * (radius - DistanceToNearest);
+            default:
+                return new Vector2(-1f);
         }
-
-        return new Vector2(-1f, -1f);
     }
 
     public override void DebugDraw()
     {
-        Raylib.DrawCircle((int)Position.X, (int)Position.Y, radius, new Color(0, 50, 255, 155));
-        Raylib.DrawRing(Position, radius - 3.0f, radius, 0f, 360f, 30, new Color(0, 50, 255, 200));
+        Raylib.DrawCircle((int)Position.X, (int)Position.Y, radius, DebugColor);
+        Raylib.DrawRing(Position, radius - 3.0f, radius, 0f, 360f, 30, DebugColorOutline);
     }
 
 }
 
 
-class RectangleCollisionShape(Vector2 p_position, Vector2 p_size) : CollisionShape(p_position) {
-    public Vector2 Size = p_size;
+class RectangleCollisionShape(Vector2 PPosition, Vector2 PSize) : CollisionShape(PPosition) {
+    public Vector2 Size = PSize;
 
 
 
+    public override bool IntersectsWith(CollisionShape Another) {
 
-    public override bool IntersectsWith(CollisionShape another)
+        return Another switch
         {
-         if (another is CircleCollisionShape) {
-             return another.IntersectsWith(this);
-         }
-         else if (another is RectangleCollisionShape RectShape) {
-             return Position.X < another.Position.X + RectShape.Size.X
-             &&      Position.X + Size.X > another.Position.X
-             &&      Position.Y < another.Position.Y + RectShape.Size.Y
-             &&      Position.Y + Size.Y > another.Position.Y;
-         }
-         else {
-             return false;
-         }
-        }
+            CircleCollisionShape CirShape => CirShape.IntersectsWith(this),
+            RectangleCollisionShape RectShape =>
+                Position.X < Another.Position.X + RectShape.Size.X
+                && Position.X + Size.X > Another.Position.X
+                && Position.Y < Another.Position.Y + RectShape.Size.Y
+                && Position.Y + Size.Y > Another.Position.Y,
+
+            _ => false,
+
+        };
+    }
+
 
 
     public override void DebugDraw()
     {
-        Raylib.DrawRectangle((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y, new Color(0, 50, 255, 150));
-        Raylib.DrawRectangleLines((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y, new Color(0, 50, 255, 200));
+        Raylib.DrawRectangle((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y, DebugColor);
+        Raylib.DrawRectangleLines((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y, DebugColorOutline);
 
     }
 
@@ -137,40 +131,49 @@ class RectangleCollisionShape(Vector2 p_position, Vector2 p_size) : CollisionSha
             case CircleCollisionShape Shape:
                 return -Shape.GetIntersectionDisplacement(this);
             case RectangleCollisionShape Shape:
-                // Vector2 DirToShape = Util.GetDirectionBetween(this.Position, Shape.Position);
                 float XDiff = MathF.Max(0f, MathF.Min(Position.X + Size.X, Shape.Position.X + Shape.Size.X) - MathF.Max(Position.X, Shape.Position.X));
                 float YDiff = MathF.Max(0f, MathF.Min(Position.Y + Size.Y, Shape.Position.Y + Shape.Size.Y) - MathF.Max(Position.Y, Shape.Position.Y));
                 
                 return new Vector2(XDiff < YDiff ? (Position.X > Shape.Position.X ? XDiff : -XDiff) : 0f,
                 YDiff < XDiff ? (Position.Y > Shape.Position.Y ? YDiff : -YDiff ) : 0f);
+            default:
+                return new Vector2(-1f);
         }
 
-        return new Vector2(-1f, -1f);
     }
 }
 
 
 
-class Util {
-    public static float DistanceBetween(Vector2 A, Vector2 B) =>
-        MathF.Sqrt(MathF.Pow((B.X - A.X), 2f) + MathF.Pow((B.Y - A.Y), 2f));
-
-    // Simple float clamp
-    public static float Clamp(float value, float min, float max)
+class Util
+{
+    public static float DistanceBetween(Vector2 A, Vector2 B)
     {
-        if (value < min) return min;
-        if (value > max) return max;
-        return value;
+        return MathF.Sqrt(MathF.Pow(B.X - A.X, 2f) + MathF.Pow(B.Y - A.Y, 2f));
+    }
+    
+    public static float Clamp(float Value, float Min, float Max)
+    {
+        if (Min > Max) Min = Max;
+        if (Max < Min) Max = Min;
+
+        if (Value < Min) return Min;
+        if (Value > Max) return Max;
+
+        return Value;
     }
 
-    public static Vector2 GetDirectionBetween(Vector2 A, Vector2 B) {
+    public static Vector2 GetDirectionBetween(Vector2 A, Vector2 B)
+    {
         return Util.Normalized(B - A);
     }
 
-    public static float GetLength(Vector2 A) {
-        return Util.DistanceBetween(new Vector2(0f, 0f), A);
+    public static float GetLength(Vector2 A)
+    {
+        return Util.DistanceBetween(Vector2.Zero, A);
     }
-    public static Vector2 Normalized(Vector2 A) {
+    public static Vector2 Normalized(Vector2 A)
+    {
         return new Vector2(A.X / Util.GetLength(A), A.Y / Util.GetLength(A));
     }
 }

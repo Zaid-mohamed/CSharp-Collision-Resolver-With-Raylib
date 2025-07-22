@@ -1,4 +1,3 @@
-using System;
 using System.Numerics;
 using Raylib_cs;
 
@@ -7,49 +6,49 @@ class Node {
     public string Name = "";
     public List<Node> Children = [];
     
-    protected Node? parent;
+    protected Node? Parent;
 
 
-    public Node? GetParent() => parent;
+    public Node? GetParent() => Parent;
 
-    public void AddChild(Node p_node) {
-        Children.Add(p_node);
+    public void AddChild(Node PNode) {
+        Children.Add(PNode);
     }
 }
 
 
 
 class Node2D : Node {
-    public Vector2 position = new(0f, 0f);
+    public Vector2 Position = new(0f, 0f);
 
     RectangleShape RectShape;
     CircleShape CirShape;
 
 
-    public Node2D(float PosX, float PosY, Shape p_shape, Node? p_parent) {
-        position.X = PosX;
-        position.Y = PosY;
-        shape = p_shape;
-        parent = p_parent;
-        parent?.AddChild(this);
+    public Node2D(float PosX, float PosY, DrawShape PShape, Node? PParent) {
+        Position.X = PosX;
+        Position.Y = PosY;
+        Shape = PShape;
+        Parent = PParent;
+        Parent?.AddChild(this);
 
     }
 
-    public enum Shape {
+    public enum DrawShape {
         CIRCLE,
         RECTANGLE,
     }
 
-    public Shape shape;
+    public DrawShape Shape;
 
     public virtual void Draw() {
         Vector2 FinalPos = GetRealPosition();
 
-        switch (shape) {
-            case Shape.CIRCLE:
-                Raylib.DrawCircle((int)FinalPos.X, (int)FinalPos.Y, CirShape.radius, CirShape.color);
+        switch (Shape) {
+            case DrawShape.CIRCLE:
+                Raylib.DrawCircle((int)FinalPos.X, (int)FinalPos.Y, CirShape.Radius, CirShape.Color);
                 break;
-            case Shape.RECTANGLE:
+            case DrawShape.RECTANGLE:
                 Raylib.DrawRectangle((int)FinalPos.X, (int)FinalPos.Y, (int)RectShape.Size.X, (int)RectShape.Size.Y, RectShape.color);
                 break;
         }
@@ -58,20 +57,20 @@ class Node2D : Node {
     }
 
 
-    public void GiveRectShape(RectangleShape p_shape) {
-        if (shape == Shape.RECTANGLE) {
-            RectShape = p_shape;
+    public void GiveRectShape(RectangleShape PShape) {
+        if (Shape == DrawShape.RECTANGLE) {
+            RectShape = PShape;
         }
         else {
-            Console.WriteLine(string.Format("Node with name: {0} failed to get rectange shape"));
+            Console.WriteLine(string.Format("Node with name: {0} failed to get rectangle shape"));
         }
 
     }
 
     
-    public void GiveCircleShape(CircleShape p_shape) {
-        if (shape == Shape.CIRCLE) {
-            CirShape = p_shape;
+    public void GiveCircleShape(CircleShape PShape) {
+        if (Shape == DrawShape.CIRCLE) {
+            CirShape = PShape;
         }
         else {
             Console.WriteLine(string.Format("Node with name: {0} failed to get circle shape"));
@@ -81,11 +80,11 @@ class Node2D : Node {
 
 
     private Vector2 GetRealPosition() {
-        if ((parent is null) || (parent is not Node2D parent2D)) {
-            return position;
+        if ((Parent is null) || (Parent is not Node2D Parent2D)) {
+            return Position;
         }
         else {
-            return parent2D.position + position;
+            return Parent2D.Position + Position;
         }
     }
 
@@ -94,13 +93,13 @@ class Node2D : Node {
 
 
 struct CircleShape{
-    public float radius;
+    public float Radius;
 
-    public Color color;
+    public Color Color;
 
-   public CircleShape(float p_radius, Color p_color) {
-        radius = p_radius;
-        color = p_color;
+   public CircleShape(float PRadius, Color PColor) {
+        Radius = PRadius;
+        Color = PColor;
     }
 }
 
@@ -110,9 +109,9 @@ struct RectangleShape {
     public Vector2 Size;
     public Color color;
 
-    public RectangleShape(Vector2 p_size, Color p_color) {
-        Size = p_size;
-        color = p_color;
+    public RectangleShape(Vector2 PSize, Color PColor) {
+        Size = PSize;
+        color = PColor;
 
     }
 }
