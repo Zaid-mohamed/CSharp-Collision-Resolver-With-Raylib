@@ -91,7 +91,7 @@ class CircleCollisionShape(Vector2 PPosition, float PRadius) : CollisionShape(PP
 
     public override Vector2 GetIntersectionDisplacement(CollisionShape Another)
     {
-        if (!this.IntersectsWith(Another)) return new Vector2(-1f, -1f);
+        if (!IntersectsWith(Another)) return new Vector2(-1f, -1f);
 
         switch (Another) {
             case CircleCollisionShape Shape:
@@ -104,17 +104,16 @@ class CircleCollisionShape(Vector2 PPosition, float PRadius) : CollisionShape(PP
                     Position.X,
                     Shape.Position.X,
                     Shape.Position.X + Shape.Size.X
-                    ),
+                ),
                 Util.Clamp(
                     Position.Y,
                     Shape.Position.Y,
                     Shape.Position.Y + Shape.Size.Y
-                    )
-
-                
+                )
                 );
 
                 float DistanceToNearest = Util.DistanceBetween(this.Position, NearestPoint);
+                
                 return Util.GetDirectionBetween(this.Position, NearestPoint) * (radius - DistanceToNearest);
             default:
                 return new Vector2(-1f);

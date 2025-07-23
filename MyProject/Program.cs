@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Numerics;
+using System.Reflection;
 using Raylib_cs;
 
 
@@ -12,25 +13,11 @@ namespace MyProject
 
         static void Main(string[] Args)
         {
-            Player player = new(440f, 120f, Node2D.DrawShape.RECTANGLE, null);
-            StaticObject Dummy = new(320f, 120f, Node2D.DrawShape.CIRCLE, null);
-            StaticObject Dummy2 = new(0f, 200f, Node2D.DrawShape.RECTANGLE, null);
             PhysicsResolver ps = new();
-
-
-            ps.AddObject(player);
-            ps.AddObject(Dummy);
-            ps.AddObject(Dummy2);
-
-
-
-            player.GiveRectShape(new(new(60f), Color.Gold));
-            Dummy.GiveCircleShape(new(60f, Color.Black));
-            Dummy2.GiveRectShape(new(new Vector2(640f, 60f), Color.Red));
-
-            Dummy.AddCollisionShape(new CircleCollisionShape(Dummy.Position, 60f));
-            player.AddCollisionShape(new RectangleCollisionShape(player.Position, new(60f)));
-            Dummy2.AddCollisionShape(new RectangleCollisionShape(Dummy2.Position, new Vector2(640f, 60f)));
+            // Player player = new(440f, 120f, Node2D.DrawShape.RECTANGLE, null);
+            Player player = MakeCircleKinematicObject(new(320f, 60f), 50f, Color.Black, null, ps);
+            StaticObject Dummy = MakeCircleStaticObject(new(320f, 120f), 60f, Color.Red, null, ps );
+            StaticObject Dummy2 = MakeRectangleStaticObject(new(0f, 200f), new(640f, 60f), Color.Black, null, ps);
 
 
             Raylib.InitWindow(640, 360, "MyGame");
@@ -43,6 +30,7 @@ namespace MyProject
                 Dummy2.Draw();
                 player.CollShape.DebugDraw();
                 Dummy2.CollShape.DebugDraw();
+                Dummy.CollShape.DebugDraw();
                 ps.ResolveCollision();
                 Raylib.EndDrawing();
             }
@@ -52,5 +40,40 @@ namespace MyProject
 
 
         }
+
+
+        public static StaticObject MakeRectangleStaticObject(Vector2 PPosition, Vector2 PSize, Color PColor, Node? PParent, PhysicsResolver PPS) {
+            StaticObject Result = new StaticObject(PPosition.X, PPosition.Y, Node2D.DrawShape.RECTANGLE, PParent);
+            Result.GiveRectShape(new(PSize, PColor));
+            Result.AddCollisionShape(new RectangleCollisionShape(PPosition, PSize));
+            PPS.AddObject(Result);
+            return Result;
+        } 
+        
+        public static StaticObject MakeCircleStaticObject(Vector2 PPosition, float PRadius, Color PColor, Node? PParent, PhysicsResolver PPS) {
+            StaticObject Result = new StaticObject(PPosition.X, PPosition.Y, Node2D.DrawShape.CIRCLE, PParent);
+            Result.GiveCircleShape(new(PRadius, PColor));
+            Result.AddCollisionShape(new CircleCollisionShape(PPosition, PRadius));
+            PPS.AddObject(Result);
+            return Result;
+
+        }
+
+        public static Player MakeRectangleKinematicObject(Vector2 PPosition, Vector2 PSize, Color PColor, Node? PParent, PhysicsResolver PPS) {
+            Player Result = new Player(PPosition.X, PPosition.Y, Node2D.DrawShape.RECTANGLE, PParent);
+            Result.GiveRectShape(new(PSize, PColor));
+            Result.AddCollisionShape(new RectangleCollisionShape(PPosition, PSize));
+            PPS.AddObject(Result);
+            return Result;
+        } 
+        
+        public static Player MakeCircleKinematicObject(Vector2 PPosition, float PRadius, Color PColor, Node? PParent, PhysicsResolver PPS) {
+            Player Result = new Player(PPosition.X, PPosition.Y, Node2D.DrawShape.CIRCLE, PParent);
+            Result.GiveCircleShape(new(PRadius, PColor));
+            Result.AddCollisionShape(new CircleCollisionShape(PPosition, PRadius));
+            PPS.AddObject(Result);
+            return Result;
+
+        } 
     }
 }
