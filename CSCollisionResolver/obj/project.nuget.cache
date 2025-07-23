@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "JZUcf/QQ6G0=",
+  "success": true,
+  "projectFilePath": "H:\\Zaid\\PlayGround\\dotnet\\CSCollisionResolver\\MyProject.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Zaid Mohamed\\.nuget\\packages\\raylib-cs\\7.0.1\\raylib-cs.7.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}
