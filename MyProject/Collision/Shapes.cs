@@ -176,7 +176,7 @@ class RectangleCollisionShape(Vector2 PPosition, Vector2 PSize) : CollisionShape
 
         switch (Another) {
             case CircleCollisionShape Shape:
-                return -Shape.GetIntersectionDisplacement(this);
+                return Shape.GetIntersectionDisplacement(this);
             case RectangleCollisionShape Shape:
                 float XDiff = MathF.Max(0f, MathF.Min(Position.X + Size.X, Shape.Position.X + Shape.Size.X) - MathF.Max(Position.X, Shape.Position.X));
                 float YDiff = MathF.Max(0f, MathF.Min(Position.Y + Size.Y, Shape.Position.Y + Shape.Size.Y) - MathF.Max(Position.Y, Shape.Position.Y));
